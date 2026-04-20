@@ -1,0 +1,10 @@
+{
+  "name": "aldipedia",
+  "version": "1.0.0",
+  "description": "Toko digital dengan QRIS dan OTP WhatsApp",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "dependencies": {},
+  "author": "ALDI PEDIA"
+}

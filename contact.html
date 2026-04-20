@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kontak - ALDI PEDIA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(145deg, #0a2f44, #052e3d);
+        }
+        .contact-card {
+            background: linear-gradient(145deg, #0a4c66, #063e54);
+            border-radius: 32px;
+            border: 1px solid #0891b2;
+            transition: 0.2s;
+        }
+        .contact-card:hover {
+            transform: translateY(-5px);
+            border-color: #06b6d4;
+        }
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #25D366;
+            border-radius: 60px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 100;
+            transition: 0.2s;
+        }
+        .whatsapp-float:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <nav class="bg-[#062c3b] border-b-2 border-[#06b6d4] py-5 sticky top-0 z-50">
+        <div class="container mx-auto px-5 flex flex-wrap justify-between items-center">
+            <div class="text-2xl font-extrabold bg-gradient-to-r from-[#06b6d4] to-[#22d3ee] bg-clip-text text-transparent">
+                <i class="fas fa-store mr-2"></i>ALDI PEDIA
+            </div>
+            <ul class="flex gap-6 font-semibold text-gray-200">
+                <li><a href="index.html" class="hover:text-[#06b6d4]">Home</a></li>
+                <li><a href="products.html" class="hover:text-[#06b6d4]">Products</a></li>
+                <li><a href="contact.html" class="text-[#06b6d4]">Contact</a></li>
+                <li><a href="login.html" id="loginNavBtn" class="hover:text-[#06b6d4]">Login</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-5 py-16">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-black text-[#22d3ee]">📞 Hubungi Kami</h1>
+            <p class="text-[#bae6fd] mt-2">Kami siap membantu Anda 24/7</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Email -->
+            <div class="contact-card p-6 text-center">
+                <i class="fas fa-envelope text-5xl text-[#06b6d4] mb-3"></i>
+                <h3 class="text-xl font-bold text-[#22d3ee]">Email</h3>
+                <p class="text-[#bae6fd] break-all">support@aldipedia.com</p>
+                <p class="text-[#bae6fd] text-sm">admin@aldipedia.com</p>
+            </div>
+            <!-- WhatsApp (nomor owner) -->
+            <div class="contact-card p-6 text-center">
+                <i class="fab fa-whatsapp text-5xl text-[#25D366] mb-3"></i>
+                <h3 class="text-xl font-bold text-[#22d3ee]">WhatsApp</h3>
+                <p class="text-[#bae6fd] font-mono">6283174310068</p>
+                <p class="text-[#bae6fd] text-sm">Fast Response 24/7</p>
+            </div>
+            <!-- Instagram -->
+            <div class="contact-card p-6 text-center">
+                <i class="fab fa-instagram text-5xl text-pink-500 mb-3"></i>
+                <h3 class="text-xl font-bold text-[#22d3ee]">Instagram</h3>
+                <p class="text-[#bae6fd]">@aldipedia</p>
+                <p class="text-[#bae6fd] text-sm">DM untuk konsultasi</p>
+            </div>
+            <!-- Alamat -->
+            <div class="contact-card p-6 text-center">
+                <i class="fas fa-map-marker-alt text-5xl text-[#06b6d4] mb-3"></i>
+                <h3 class="text-xl font-bold text-[#22d3ee]">Berbasis di</h3>
+                <p class="text-[#bae6fd]">Indonesia 🇮🇩</p>
+                <p class="text-[#bae6fd] text-sm">Menerima klien worldwide</p>
+            </div>
+        </div>
+
+        <!-- Info tambahan -->
+        <div class="mt-16 bg-[#062c3b]/50 rounded-3xl p-8 text-center border border-[#0891b2]">
+            <i class="fas fa-headset text-3xl text-[#06b6d4] mb-3"></i>
+            <h3 class="text-xl font-bold text-[#22d3ee]">Butuh bantuan?</h3>
+            <p class="text-[#bae6fd] max-w-xl mx-auto">Jangan ragu untuk menghubungi tim support kami. Kami akan merespon dalam waktu kurang dari 2 jam.</p>
+            <a href="https://wa.me/6283174310068" target="_blank" class="inline-flex items-center gap-2 mt-4 px-6 py-2 rounded-full bg-[#25D366] text-white font-semibold hover:shadow-lg transition">
+                <i class="fab fa-whatsapp"></i> Chat via WhatsApp
+            </a>
+        </div>
+    </div>
+
+    <!-- Floating WhatsApp button -->
+    <a href="https://wa.me/6283174310068" target="_blank" class="whatsapp-float">
+        <i class="fab fa-whatsapp text-xl"></i> Chat Sekarang
+    </a>
+
+    <footer class="bg-[#05212e] py-8 text-center border-t-2 border-[#06b6d4] mt-10">
+        <p class="text-[#bae6fd]">© 2026 ALDI PEDIA. All rights reserved.</p>
+        <p class="text-xs text-[#bae6fd]/70 mt-2">Nomor WhatsApp: 6283174310068 (Admin & Pengirim OTP)</p>
+    </footer>
+
+    <script>
+        const loggedUser = localStorage.getItem('loggedInUser');
+        const loginBtn = document.getElementById('loginNavBtn');
+        if (loggedUser && loginBtn) {
+            loginBtn.innerText = 'Dashboard';
+            loginBtn.href = 'dashboard.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Daftar - ALDI PEDIA | Verifikasi WhatsApp</title>
+    <meta name="description" content="Daftar akun ALDI PEDIA dengan verifikasi OTP via WhatsApp. Nomor pengirim: 6283174310068">
+    <!-- Tailwind CSS + Font Inter + Font Awesome -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(145deg, #0a2f44 0%, #052e3d 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .register-card {
+            background: linear-gradient(145deg, #0a4c66, #063e54);
+            max-width: 520px;
+            width: 100%;
+            border-radius: 48px;
+            border: 1px solid #0891b2;
+            box-shadow: 0 25px 45px rgba(6,182,212,0.2);
+            transition: all 0.3s;
+        }
+        .input-field {
+            background: #052e3d;
+            border: 1px solid #0891b2;
+            border-radius: 60px;
+            padding: 14px 18px;
+            width: 100%;
+            color: white;
+            transition: all 0.2s;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #06b6d4;
+            box-shadow: 0 0 0 2px rgba(6,182,212,0.3);
+        }
+        .btn-gradient {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            transition: all 0.2s;
+        }
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(6,182,212,0.3);
+        }
+        .step-2 {
+            display: none;
+        }
+        .step-2.active {
+            display: block;
+        }
+        .status-badge {
+            padding: 10px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+        .toast-message {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e293b;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 60px;
+            z-index: 1000;
+            font-size: 0.9rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border-left: 4px solid #06b6d4;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-card p-6 md:p-8">
+        <!-- Header -->
+        <div class="text-center mb-6">
+            <div class="text-3xl font-extrabold bg-gradient-to-r from-[#06b6d4] to-[#22d3ee] bg-clip-text text-transparent">
+                <i class="fas fa-store mr-2"></i>ALDI PEDIA
+            </div>
+            <h2 class="text-2xl font-bold text-[#22d3ee] mt-2">Daftar Akun</h2>
+            <p class="text-[#bae6fd] text-sm">Verifikasi via WhatsApp (OTP)</p>
+        </div>
+
+        <!-- STEP 1: Form Registrasi -->
+        <div id="step1" class="step-1">
+            <div class="space-y-3">
+                <input type="email" id="regEmail" placeholder="Email *" class="input-field" autocomplete="email">
+                <input type="text" id="regUsername" placeholder="Username * (min 3 karakter)" class="input-field" autocomplete="username">
+                <input type="tel" id="regPhone" placeholder="Nomor WhatsApp * (contoh: 628123456789)" class="input-field" autocomplete="tel">
+                <input type="password" id="regPassword" placeholder="Password * (min 6 karakter)" class="input-field" autocomplete="new-password">
+                <input type="password" id="regConfirmPassword" placeholder="Konfirmasi Password *" class="input-field" autocomplete="off">
+            </div>
+            <button id="sendOtpBtn" class="btn-gradient w-full mt-6 py-3 rounded-full font-bold text-white flex items-center justify-center gap-2">
+                <i class="fab fa-whatsapp"></i> Kirim Kode OTP via WhatsApp
+            </button>
+            <p class="text-center text-xs text-[#bae6fd] mt-4">
+                <i class="fas fa-lock"></i> Data aman & terenkripsi
+            </p>
+        </div>
+
+        <!-- STEP 2: Verifikasi OTP -->
+        <div id="step2" class="step-2">
+            <div class="bg-[#052e3d] rounded-2xl p-4 mb-4 text-center">
+                <i class="fab fa-whatsapp text-3xl text-[#06b6d4]"></i>
+                <p class="text-[#bae6fd] text-sm mt-1">Kode OTP telah dikirim ke nomor <span id="displayPhone" class="font-mono font-bold text-white"></span></p>
+            </div>
+            <input type="text" id="otpCode" placeholder="Masukkan kode OTP 6 digit" maxlength="6" class="input-field text-center text-2xl tracking-widest">
+            <div class="flex gap-3 mt-4">
+                <button id="verifyOtpBtn" class="btn-gradient flex-1 py-3 rounded-full font-bold text-white">Verifikasi & Daftar</button>
+                <button id="resendOtpBtn" disabled class="flex-1 py-3 rounded-full font-semibold border border-[#06b6d4] text-[#06b6d4] bg-transparent">Kirim Ulang (<span id="countdown">60</span>s)</button>
+            </div>
+        </div>
+
+        <!-- Link Login -->
+        <div class="text-center mt-6 text-sm">
+            Sudah punya akun? <a href="login.html" class="text-[#06b6d4] font-semibold hover:underline">Login</a>
+        </div>
+    </div>
+
+    <!-- Toast message -->
+    <div id="toast" class="toast-message"></div>
+
+    <script>
+        // ============================================================
+        // REGISTER.JS - LOGIKA PENDAFTARAN DENGAN OTP WHATSAPP
+        // Nomor pengirim OTP: 6283174310068 (Fonnte)
+        // ============================================================
+        
+        // DOM elements
+        const step1 = document.getElementById('step1');
+        const step2 = document.getElementById('step2');
+        const sendOtpBtn = document.getElementById('sendOtpBtn');
+        const verifyOtpBtn = document.getElementById('verifyOtpBtn');
+        const resendOtpBtn = document.getElementById('resendOtpBtn');
+        const countdownSpan = document.getElementById('countdown');
+        const displayPhoneSpan = document.getElementById('displayPhone');
+        const toastDiv = document.getElementById('toast');
+        
+        // Variabel state
+        let currentPhoneNumber = '';
+        let countdownInterval = null;
+        let tempUserData = null;
+        
+        // Helper: show toast message
+        function showToast(message, type = 'info') {
+            toastDiv.innerHTML = `<i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'} mr-2"></i> ${message}`;
+            toastDiv.style.display = 'block';
+            setTimeout(() => {
+                toastDiv.style.display = 'none';
+            }, 4000);
+        }
+        
+        // Helper: validasi email sederhana
+        function isValidEmail(email) {
+            return /^[^\s@]+@([^\s@.,]+\.)+[^\s@.,]{2,}$/.test(email);
+        }
+        
+        // Helper: validasi username (alphanumeric + underscore, 3-20)
+        function isValidUsername(username) {
+            return /^[a-zA-Z0-9_]{3,20}$/.test(username);
+        }
+        
+        // Helper: validasi nomor WA Indonesia (62xxx)
+        function isValidPhone(phone) {
+            return /^62[0-9]{9,13}$/.test(phone);
+        }
+        
+        // Helper: countdown timer untuk resend OTP
+        function startCountdown(seconds) {
+            let remaining = seconds;
+            resendOtpBtn.disabled = true;
+            if (countdownInterval) clearInterval(countdownInterval);
+            countdownInterval = setInterval(() => {
+                remaining--;
+                countdownSpan.innerText = remaining;
+                if (remaining <= 0) {
+                    clearInterval(countdownInterval);
+                    resendOtpBtn.disabled = false;
+                    countdownSpan.innerText = '0';
+                }
+            }, 1000);
+        }
+        
+        // Kirim OTP ke backend
+        async function sendOtp(phoneNumber) {
+            try {
+                const response = await fetch('/api/send-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phoneNumber })
+                });
+                const data = await response.json();
+                return data;
+            } catch (err) {
+                console.error(err);
+                return { success: false, error: err.message };
+            }
+        }
+        
+        // Verifikasi OTP dan daftar user
+        async function verifyAndRegister(phoneNumber, otp, userData) {
+            try {
+                const response = await fetch('/api/verify-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        phoneNumber,
+                        otp,
+                        email: userData.email,
+                        username: userData.username,
+                        password: userData.password
+                    })
+                });
+                const data = await response.json();
+                return data;
+            } catch (err) {
+                console.error(err);
+                return { success: false, error: err.message };
+            }
+        }
+        
+        // Event: Kirim OTP
+        sendOtpBtn.addEventListener('click', async () => {
+            // Ambil nilai input
+            const email = document.getElementById('regEmail').value.trim();
+            const username = document.getElementById('regUsername').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const confirm = document.getElementById('regConfirmPassword').value;
+            
+            // Validasi
+            if (!email || !username || !phone || !password || !confirm) {
+                showToast('Semua field harus diisi!', 'error');
+                return;
+            }
+            if (!isValidEmail(email)) {
+                showToast('Format email tidak valid!', 'error');
+                return;
+            }
+            if (!isValidUsername(username)) {
+                showToast('Username harus 3-20 karakter (huruf, angka, underscore)', 'error');
+                return;
+            }
+            if (!isValidPhone(phone)) {
+                showToast('Nomor WhatsApp harus format 628xxxxxxxxxx (contoh: 628123456789)', 'error');
+                return;
+            }
+            if (password.length < 6) {
+                showToast('Password minimal 6 karakter', 'error');
+                return;
+            }
+            if (password !== confirm) {
+                showToast('Password dan konfirmasi tidak cocok', 'error');
+                return;
+            }
+            
+            // Simpan data sementara
+            currentPhoneNumber = phone;
+            tempUserData = { email, username, password };
+            displayPhoneSpan.innerText = phone;
+            
+            // Kirim OTP
+            sendOtpBtn.disabled = true;
+            sendOtpBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim OTP...';
+            
+            const result = await sendOtp(phone);
+            
+            if (result.success) {
+                showToast('✅ Kode OTP telah dikirim ke WhatsApp Anda', 'success');
+                // Pindah ke step 2
+                step1.style.display = 'none';
+                step2.classList.add('active');
+                startCountdown(60);
+            } else {
+                showToast('❌ Gagal mengirim OTP: ' + (result.error || 'Coba lagi'), 'error');
+                sendOtpBtn.disabled = false;
+                sendOtpBtn.innerHTML = '<i class="fab fa-whatsapp"></i> Kirim Kode OTP via WhatsApp';
+            }
+        });
+        
+        // Event: Verifikasi OTP
+        verifyOtpBtn.addEventListener('click', async () => {
+            const otp = document.getElementById('otpCode').value.trim();
+            if (!otp || otp.length !== 6) {
+                showToast('Masukkan kode OTP 6 digit', 'error');
+                return;
+            }
+            
+            verifyOtpBtn.disabled = true;
+            verifyOtpBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memverifikasi...';
+            
+            const result = await verifyAndRegister(currentPhoneNumber, otp, tempUserData);
+            
+            if (result.success) {
+                showToast('✅ Pendaftaran berhasil! Silakan login.', 'success');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+            } else {
+                showToast('❌ Verifikasi gagal: ' + (result.error || 'Coba lagi'), 'error');
+                verifyOtpBtn.disabled = false;
+                verifyOtpBtn.innerHTML = 'Verifikasi & Daftar';
+            }
+        });
+        
+        // Event: Kirim ulang OTP
+        resendOtpBtn.addEventListener('click', async () => {
+            if (!currentPhoneNumber) return;
+            resendOtpBtn.disabled = true;
+            resendOtpBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+            
+            const result = await sendOtp(currentPhoneNumber);
+            
+            if (result.success) {
+                showToast('✅ OTP dikirim ulang', 'success');
+                startCountdown(60);
+            } else {
+                showToast('❌ Gagal kirim ulang', 'error');
+                resendOtpBtn.disabled = false;
+                resendOtpBtn.innerHTML = 'Kirim Ulang';
+            }
+            resendOtpBtn.innerHTML = `Kirim Ulang (<span id="countdown">60</span>s)`;
+        });
+        
+        // Cleanup interval jika halaman ditutup
+        window.addEventListener('beforeunload', () => {
+            if (countdownInterval) clearInterval(countdownInterval);
+        });
+    </script>
+</body>
+</html>

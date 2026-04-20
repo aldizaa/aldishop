@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produk - ALDI PEDIA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(145deg, #0a2f44, #052e3d);
+        }
+        .product-card {
+            background: linear-gradient(145deg, #0a4c66, #063e54);
+            border-radius: 32px;
+            border: 1px solid #0891b2;
+            transition: all 0.3s;
+        }
+        .product-card:hover {
+            transform: translateY(-8px);
+            border-color: #06b6d4;
+            box-shadow: 0 20px 30px rgba(6,182,212,0.2);
+        }
+        .btn-buy {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            transition: 0.2s;
+        }
+        .btn-buy:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(6,182,212,0.4);
+        }
+        .toast-message {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e293b;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 60px;
+            z-index: 1000;
+            font-size: 0.9rem;
+            border-left: 4px solid #06b6d4;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <nav class="bg-[#062c3b] border-b-2 border-[#06b6d4] py-5 sticky top-0 z-50">
+        <div class="container mx-auto px-5 flex flex-wrap justify-between items-center">
+            <div class="text-2xl font-extrabold bg-gradient-to-r from-[#06b6d4] to-[#22d3ee] bg-clip-text text-transparent">
+                <i class="fas fa-store mr-2"></i>ALDI PEDIA
+            </div>
+            <ul class="flex gap-6 font-semibold text-gray-200">
+                <li><a href="index.html" class="hover:text-[#06b6d4]">Home</a></li>
+                <li><a href="products.html" class="text-[#06b6d4]">Products</a></li>
+                <li><a href="contact.html" class="hover:text-[#06b6d4]">Contact</a></li>
+                <li><a href="login.html" id="loginNavBtn" class="hover:text-[#06b6d4]">Login</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-5 py-12">
+        <h1 class="text-4xl font-black text-center text-[#22d3ee] mb-4">🔥 Semua Produk Digital</h1>
+        <p class="text-center text-[#bae6fd] mb-10">Klik "Pesan Sekarang" untuk membeli dengan QRIS</p>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="productsGrid"></div>
+    </div>
+
+    <div id="toast" class="toast-message"></div>
+
+    <footer class="bg-[#05212e] py-8 text-center border-t-2 border-[#06b6d4] mt-10">
+        <p class="text-[#bae6fd]">© 2026 ALDI PEDIA. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Data produk
+        const products = [
+            { id: 1, name: "🚀 SOURCE CODE WEBSITE REST API", price: 45000, desc: "150+ endpoint, JWT auth, dokumentasi lengkap", sold: 127 },
+            { id: 2, name: "🤖 Script Bot WhatsApp Premium", price: 149000, desc: "Auto reply, AI response, multi-device support", sold: 89 },
+            { id: 3, name: "⚡ Panel Auto Responder", price: 89000, desc: "Response instan untuk customer service", sold: 234 },
+            { id: 4, name: "💳 Aplikasi Kasir Digital", price: 199000, desc: "Laporan keuangan, print struk, manajemen stok", sold: 56 },
+            { id: 5, name: "🌐 Landing Page Builder", price: 129000, desc: "Drag & drop, template modern, responsive", sold: 112 },
+            { id: 6, name: "📊 Dashboard Admin Premium", price: 99000, desc: "Analytics, user management, dark mode", sold: 78 }
+        ];
+
+        // Cek login status
+        const loggedUser = localStorage.getItem('loggedInUser');
+        const loginBtn = document.getElementById('loginNavBtn');
+        if (loggedUser && loginBtn) {
+            loginBtn.innerText = 'Dashboard';
+            loginBtn.href = 'dashboard.html';
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.innerHTML = `<i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'} mr-2"></i> ${message}`;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 4000);
+        }
+
+        async function buyProduct(productId, productName, price) {
+            const user = localStorage.getItem('loggedInUser');
+            if (!user) {
+                if (confirm('Anda belum login. Buka halaman login?')) {
+                    window.location.href = 'login.html';
+                }
+                return;
+            }
+
+            const userData = JSON.parse(user);
+            const customerEmail = userData.email;
+
+            showToast('⏳ Memproses pembayaran...', 'info');
+
+            try {
+                const response = await fetch('/api/create-payment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        productId,
+                        productName,
+                        amount: price,
+                        customerEmail
+                    })
+                });
+                const data = await response.json();
+
+                if (data.success && data.qrString) {
+                    // Simpan pesanan ke localStorage (riwayat)
+                    let orders = JSON.parse(localStorage.getItem('userOrders')) || [];
+                    orders.push({
+                        productName: productName,
+                        amount: price,
+                        status: 'Pending',
+                        date: new Date().toISOString(),
+                        orderId: data.orderId
+                    });
+                    localStorage.setItem('userOrders', JSON.stringify(orders));
+
+                    // Tampilkan QRIS (bisa dengan modal atau alert)
+                    alert(`✅ Transaksi dibuat!\nOrder ID: ${data.orderId}\nTotal: Rp ${price.toLocaleString()}\n\nScan QRIS berikut:\n${data.qrString}\n\nPembayaran akan dikonfirmasi otomatis.`);
+                    showToast('Silakan scan QRIS untuk menyelesaikan pembayaran', 'success');
+                } else {
+                    throw new Error(data.error || 'Gagal membuat transaksi');
+                }
+            } catch (err) {
+                console.error(err);
+                // Fallback demo
+                let orders = JSON.parse(localStorage.getItem('userOrders')) || [];
+                orders.push({
+                    productName: productName,
+                    amount: price,
+                    status: 'Demo',
+                    date: new Date().toISOString()
+                });
+                localStorage.setItem('userOrders', JSON.stringify(orders));
+                showToast('⚠️ Mode demo: Pesanan dicatat (tanpa pembayaran)', 'info');
+            }
+        }
+
+        // Render produk
+        const grid = document.getElementById('productsGrid');
+        grid.innerHTML = products.map(p => `
+            <div class="product-card p-6">
+                <div class="flex justify-between items-start">
+                    <h3 class="text-xl font-bold text-[#22d3ee]">${p.name}</h3>
+                    <span class="bg-[#06b6d4]/20 text-[#06b6d4] text-xs px-2 py-1 rounded-full">⭐ ${p.sold}+ terjual</span>
+                </div>
+                <p class="text-[#bae6fd] mt-2">${p.desc}</p>
+                <div class="text-3xl font-black text-[#06b6d4] my-4">Rp ${p.price.toLocaleString()}</div>
+                <button onclick="buyProduct(${p.id}, '${p.name.replace(/'/g, "\\'")}', ${p.price})" class="btn-buy w-full py-3 rounded-full font-bold text-white flex items-center justify-center gap-2">
+                    <i class="fas fa-shopping-cart"></i> Pesan Sekarang
+                </button>
+            </div>
+        `).join('');
+    </script>
+</body>
+</html>
